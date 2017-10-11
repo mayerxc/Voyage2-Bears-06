@@ -13,7 +13,7 @@
 //     console.log(newsSources);
 //   })
 
-const sportSources = [
+const sportsSources = [
   { text: 'BBC Sport (bbc-sport)', value: 'bbc-sport' },
   { text: 'ESPN (espn)', value: 'espn' },
   {
@@ -34,4 +34,4 @@ const sportSources = [
   },
 ];
 
-module.exports = sportSources;
+module.exports = sportsSources;

@@ -4,9 +4,30 @@ const router = express.Router();
 const financeSources = require('./data/FinanceSources');
 const newsSources = require('./data/NewsSources');
 const popSources = require('./data/PopSources');
-const sportSources = require('./data/SportSources');
+const sportsSources = require('./data/SportsSources');
 const techSources = require('./data/TechSources');
 
+const temporaryDisplaySourcesFunction = text => {
+  switch (text) {
+    case 'finance':
+      return financeSources.map(s => s.value);
+      break;
+    case 'news':
+      return newsSources.map(s => s.value);
+      break;
+    case 'pop':
+      return popSources.map(s => s.value);
+      break;
+    case 'sports':
+      return sportsSources.map(s => s.value);
+      break;
+    case 'tech':
+      return techSources.map(s => s.value);
+      break;
+    default:
+      break;
+  }
+};
 /**
  *
  * SLASH-COMMAND ROUTE: slack POSTs to this route, /news
@@ -39,10 +60,10 @@ router.post('/news', (req, res) => {
         'news, sports, finance, pop, and tech. Try typing `/news tech` for example.',
     });
   }
-
-  res.json({
+  const list = temporaryDisplaySourcesFunction(text);
+  return res.json({
     response_type: 'in_channel',
-    text: `headlines for ${text} will show up here`,
+    text: `headlines for ${text} will show up here, from ${list}`,
   });
 });
 
