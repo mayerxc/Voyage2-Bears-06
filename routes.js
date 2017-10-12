@@ -1,42 +1,28 @@
-const express = require('express');
-const router = express.Router();
+var express = require('express');
+var router = express.Router();
 
-const financeSources = require('./data/FinanceSources');
-const newsSources = require('./data/NewsSources');
-const popSources = require('./data/PopSources');
-const sportsSources = require('./data/SportsSources');
-const techSources = require('./data/TechSources');
+var getNews = require('./getNews');
 
-const temporaryDisplaySourcesFunction = text => {
-  switch (text) {
-    case 'finance':
-      return financeSources.map(s => s.value);
-      break;
-    case 'news':
-      return newsSources.map(s => s.value);
-      break;
-    case 'pop':
-      return popSources.map(s => s.value);
-      break;
-    case 'sports':
-      return sportsSources.map(s => s.value);
-      break;
-    case 'tech':
-      return techSources.map(s => s.value);
-      break;
-    default:
-      break;
-  }
+var financeSources = require('./data/FinanceSources');
+var newsSources = require('./data/NewsSources');
+var popSources = require('./data/PopSources');
+var sportsSources = require('./data/SportsSources');
+var techSources = require('./data/TechSources');
+var sources = {
+  finance: financeSources,
+  news: newsSources,
+  pop: popSources,
+  sports: sportsSources,
+  tech: techSources,
 };
+
 /**
  *
  * SLASH-COMMAND ROUTE: slack POSTs to this route, /news
  * 
  */
-
-router.post('/news', (req, res) => {
-  // SEE: https://api.slack.com/slash-commands
-  // console.log(req.body);
+router.post('/news', function(req, res) {
+  //console.log(req.body);
 
   // sanity check, make sure slack sent us a text string on req.body
   if (typeof req.body.text !== 'string') {
@@ -45,11 +31,13 @@ router.post('/news', (req, res) => {
       text: 'Something went wrong...',
     });
   }
-  // array of recognized words:
-  const knownWords = ['news', 'sports', 'finance', 'pop', 'tech', 'help'];
+  var response_url = req.body.response_url;
   // assign variable for user's input. Assume they meant '/news news' if they only typed `/news`
-  const text = req.body.text === '' ? 'news' : req.body.text;
-  const found = knownWords.indexOf(text) > -1;
+  var text = req.body.text === '' ? 'news' : req.body.text;
+  // array of recognized words:
+  var knownWords = ['news', 'sports', 'finance', 'pop', 'tech', 'help'];
+  // if text is in knownWords array, variable `found` is true, else false.
+  var found = knownWords.indexOf(text) > -1;
 
   // user entered 'help' or any other text we don't recognize?
   if (text === 'help' || !found) {
@@ -60,10 +48,18 @@ router.post('/news', (req, res) => {
         'news, sports, finance, pop, and tech. Try typing `/news tech` for example.',
     });
   }
-  const list = temporaryDisplaySourcesFunction(text);
+
+  // user entered a valid category
+  var categoryArray = sources[text];
+  // get random source from that category
+  var rnd = Math.floor(Math.random() * categoryArray.length);
+  var sourceName = categoryArray[rnd].text;
+  var sourceValue = categoryArray[rnd].value;
+  // request news from API and send it to user
+  getNews(sourceValue, process.env.NEWS_KEY, response_url);
   return res.json({
     response_type: 'in_channel',
-    text: `headlines for ${text} will show up here, from ${list}`,
+    text: 'headlines for ' + text + ' from ' + sourceName,
   });
 });
 
