@@ -1,4 +1,4 @@
-const techSources = [
+var techSources = [
   { text: 'Ars Technica', value: 'ars-technica' },
   { text: 'Engadget', value: 'engadget' },
   { text: 'Hacker News', value: 'hacker-news' },

@@ -1,4 +1,4 @@
-const newsSources = [
+var newsSources = [
   { text: 'ABC News (AU)', value: 'abc-news-au' },
   { text: 'Al Jazeera English', value: 'al-jazeera-english' },
   { text: 'Associated Press', value: 'associated-press' },

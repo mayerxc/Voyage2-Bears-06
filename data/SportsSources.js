@@ -1,4 +1,4 @@
-const sportsSources = [
+var sportsSources = [
   { text: 'BBC Sport', value: 'bbc-sport' },
   { text: 'ESPN', value: 'espn' },
   { text: 'FourFourTwo', value: 'four-four-two' },

@@ -6,7 +6,7 @@
  * This is an example of the sources API call:
  */
 
-// const newsSources = [];
+// var newsSources = [];
 // axios
 //   .get('https://newsapi.org/v1/sources?language=en')
 //   .then(response => {
@@ -18,7 +18,7 @@
 //     console.log(newsSources);
 //   })
 
-const financeSources = [
+var financeSources = [
   { text: 'Bloomberg', value: 'bloomberg' },
   { text: 'Business Insider', value: 'business-insider' },
   { text: 'Business Insider (UK)', value: 'business-insider-uk' },

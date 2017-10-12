@@ -3,11 +3,11 @@ var router = express.Router();
 
 var getNews = require('./getNews');
 
-var financeSources = require('./data/FinanceSources');
-var newsSources = require('./data/NewsSources');
-var popSources = require('./data/PopSources');
-var sportsSources = require('./data/SportsSources');
-var techSources = require('./data/TechSources');
+var financeSources = require('../data/FinanceSources');
+var newsSources = require('../data/NewsSources');
+var popSources = require('../data/PopSources');
+var sportsSources = require('../data/SportsSources');
+var techSources = require('../data/TechSources');
 var sources = {
   finance: financeSources,
   news: newsSources,
