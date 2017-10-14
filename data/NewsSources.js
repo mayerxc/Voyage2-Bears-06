@@ -1,0 +1,28 @@
+var newsSources = [
+  { text: 'ABC News (AU)', value: 'abc-news-au' },
+  { text: 'Al Jazeera English', value: 'al-jazeera-english' },
+  { text: 'Associated Press', value: 'associated-press' },
+  { text: 'BBC News', value: 'bbc-news' },
+  { text: 'CNN', value: 'cnn' },
+  { text: 'Daily Mail', value: 'daily-mail' },
+  { text: 'Google News', value: 'google-news' },
+  { text: 'Independent', value: 'independent' },
+  { text: 'Metro', value: 'metro' },
+  { text: 'Mirror', value: 'mirror' },
+  { text: 'Newsweek', value: 'newsweek' },
+  { text: 'New York Magazine', value: 'new-york-magazine' },
+  { text: 'Reddit /r/all', value: 'reddit-r-all' },
+  { text: 'Reuters', value: 'reuters' },
+  { text: 'The Guardian (AU)', value: 'the-guardian-au' },
+  { text: 'The Guardian (UK)', value: 'the-guardian-uk' },
+  { text: 'The Hindu', value: 'the-hindu' },
+  { text: 'The Huffington Post', value: 'the-huffington-post' },
+  { text: 'The New York Times', value: 'the-new-york-times' },
+  { text: 'The Telegraph', value: 'the-telegraph' },
+  { text: 'The Times of India', value: 'the-times-of-india' },
+  { text: 'The Washington Post', value: 'the-washington-post' },
+  { text: 'Time', value: 'time' },
+  { text: 'USA Today', value: 'usa-today' },
+];
+
+module.exports = newsSources;
