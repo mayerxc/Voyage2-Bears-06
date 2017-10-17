@@ -4,8 +4,6 @@ var techSources = [
   { text: 'Hacker News', value: 'hacker-news' },
   { text: 'IGN', value: 'ign' },
   { text: 'Mashable', value: 'mashable' },
-  { text: 'National Geographic', value: 'national-geographic' },
-  { text: 'New Scientist', value: 'new-scientist' },
   { text: 'Polygon', value: 'polygon' },
   { text: 'Recode', value: 'recode' },
   { text: 'TechCrunch', value: 'techcrunch' },
