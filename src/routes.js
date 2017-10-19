@@ -17,8 +17,29 @@ var sources = {
   sports: sportsSources,
   tech: techSources,
 };
-var knownWords = Object.keys(sources);
-knownWords.push('help', 'random');
+var categories = Object.keys(sources);
+var knownWords = categories.concat('help', 'random');
+
+/**
+ * 
+ * HELPER FUCNTIONS 
+ */
+
+// we send this `help` response from at least 2 places
+function sendHelp(res) {
+  return res.json({
+    response_type: 'in_channel', // maybe change this to 'ephemeral', later
+    text:
+      'I am a newsbot; you can ask me for headlines from any of six categories: ' +
+      'news, sports, finance, pop, science, and tech. Try typing `/news tech` for example. ' +
+      'You can also try `/news [category] random` to mix it up within a category, ' +
+      'or `/news random` to get random headlines from any source I know.',
+  });
+}
+// pick an index from an array
+function getRandomIndex(array) {
+  return Math.floor(Math.random() * array.length);
+}
 
 /**
  *
@@ -58,7 +79,7 @@ router.post('/news', function(req, res) {
       }
       result.push(text.slice(j, text.length));
       return result;
-    // text isn't defined
+      // text isn't defined
     } else {
       return ['news'];
     }
@@ -70,20 +91,14 @@ router.post('/news', function(req, res) {
 
   // if user input is empty or a single word
   if (textArr.length === 1) {
-
     var text = textArr[0];
 
-    // determine if first word of user input is a news category
+    // determine if first word of user input is a news category, `help`, or `random`
     var found = knownWords.indexOf(text) > -1;
 
     // user entered 'help' or any other text we don't recognize?
     if (text === 'help' || !found) {
-      return res.json({
-        response_type: 'in_channel', // maybe change this to 'ephemeral', later
-        text:
-          'I am a newsbot; you can ask me for headlines from any of five categories: ' +
-          'news, sports, finance, pop, and tech. Try typing `/news tech` for example.',
-      });
+      return sendHelp(res);
     }
 
     if (text === 'news') {
@@ -102,35 +117,43 @@ router.post('/news', function(req, res) {
       sourceName = 'Engadget';
       sourceValue = 'engadget';
     } else if (text === 'science') {
-      sourceName = 'value';
+      sourceName = 'science';
       sourceValue = 'new-scientist';
     } else if (text === 'random') {
-      var sourcesArray = Object.keys(sources);
-      // user entered a valid category
-      var categoryArray = sources[sourcesArray[Math.floor(Math.random() * sourcesArray.length)]];
-      // get random source from that category
-      var rnd = Math.floor(Math.random() * categoryArray.length);
-      sourceName = categoryArray[rnd].text;
-      sourceValue = categoryArray[rnd].value;
+      // pick random from all category sources
+      var randomCategory = categories[getRandomIndex(categories)];
+      var randomArray = sources[randomCategory];
+      var rnd = getRandomIndex(randomArray);
+      sourceName = randomArray[rnd].text;
+      sourceValue = randomArray[rnd].value;
     }
-
-    // request news from API and send it to user
     getNews(sourceValue, process.env.NEWS_KEY, response_url);
     return res.json({
       response_type: 'in_channel',
-      text: 'headlines for ' + text + ' from ' + sourceName,
+      text: text + ' headlines from ' + sourceName,
     });
 
-  // if user input more than one word
-  } else {
+    // if user input `category random` (or `category random [anything else]`)
+  } else if (
+    textArr.length > 1 &&
+    categories.indexOf(textArr[0]) > -1 &&
+    textArr[1] === 'random'
+  ) {
+    var chosenCategory = textArr[0];
+    var chosenArray = sources[chosenCategory];
+    var randomSource = getRandomIndex(chosenArray);
+    sourceName = chosenArray[randomSource].text;
+    sourceValue = chosenArray[randomSource].value;
+
+    getNews(sourceValue, process.env.NEWS_KEY, response_url);
     return res.json({
-      response_type: 'in_channel', // maybe change this to 'ephemeral', later
-      text:
-        'I am a newsbot; you can ask me for headlines from any of five categories: ' +
-        'news, sports, finance, pop, and tech. Try typing `/news tech` for example.',
+      response_type: 'in_channel',
+      text: 'gathering ' + chosenCategory + ' headlines from ' + sourceName,
     });
+  } else {
+    // everything else unrecognized, return help statement
+    return sendHelp(res);
   }
-
 });
 
 // TODO:
@@ -148,16 +171,14 @@ router.post('/news', function(req, res) {
  *
  */
 
- /**
-  *
-  * RANDOM SOURCE FOR EACH CATEGORY: for example '/news finance random' will pick a random source from finance sources
-  *
-  */
-
-  /**
+/**
    *
    * SEARCH FUNCTIONALITY: tbd
    *
    */
+
+/**
+    *  maybe the option to type an API source directly? like `/news bbc-sport` etc?
+    */
 
 module.exports = router;
