@@ -1,3 +1,13 @@
+/*
+██   ██ ███████ ██      ██       ██████
+██   ██ ██      ██      ██      ██    ██
+███████ █████   ██      ██      ██    ██
+██   ██ ██      ██      ██      ██    ██
+██   ██ ███████ ███████ ███████  ██████
+*/
+
+
+
 var express = require('express');
 var router = express.Router();
 
@@ -21,8 +31,8 @@ var categories = Object.keys(sources);
 var knownWords = categories.concat('help', 'random');
 
 /**
- * 
- * HELPER FUCNTIONS 
+ *
+ * HELPER FUCNTIONS
  */
 
 // we send this `help` response from at least 2 places
