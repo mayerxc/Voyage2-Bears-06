@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 
 var getNews = require('./getNews');
+var searchNews = require('./searchNews');
 
 var financeSources = require('../data/FinanceSources');
 var newsSources = require('../data/NewsSources');
@@ -21,8 +22,8 @@ var categories = Object.keys(sources);
 var knownWords = categories.concat('help', 'random');
 
 /**
- * 
- * HELPER FUCNTIONS 
+ *
+ * HELPER FUCNTIONS
  */
 
 // we send this `help` response from at least 2 places
@@ -36,6 +37,7 @@ function sendHelp(res) {
       'or `/news random` to get random headlines from any source I know.',
   });
 }
+
 // pick an index from an array
 function getRandomIndex(array) {
   return Math.floor(Math.random() * array.length);
@@ -89,54 +91,62 @@ router.post('/news', function(req, res) {
   var sourceName = '';
   var sourceValue = '';
 
+  // determine if first word of user input is a news category, `help`, or `random`
+  var found = knownWords.indexOf(textArr[0]) > -1;
+
   // if user input is empty or a single word
   if (textArr.length === 1) {
     var text = textArr[0];
 
-    // determine if first word of user input is a news category, `help`, or `random`
-    var found = knownWords.indexOf(text) > -1;
+    // if user input is a pre-defined word
+    if (found) {
+      if (text === 'help') {
+        return sendHelp(res);
+      } else if (text === 'news') {
+        sourceName = 'Associated Press';
+        sourceValue = 'associated-press';
+      } else if (text === 'sports') {
+        sourceName = 'ESPN';
+        sourceValue = 'espn';
+      } else if (text === 'finance') {
+        sourceName = 'Bloomberg';
+        sourceValue = 'bloomberg';
+      } else if (text === 'pop') {
+        sourceName = 'Entertainment Weekly';
+        sourceValue = 'entertainment-weekly';
+      } else if (text === 'tech') {
+        sourceName = 'Engadget';
+        sourceValue = 'engadget';
+      } else if (text === 'science') {
+        sourceName = 'science';
+        sourceValue = 'new-scientist';
+      } else if (text === 'random') {
+        // pick random from all category sources
+        var randomCategory = categories[getRandomIndex(categories)];
+        var randomArray = sources[randomCategory];
+        var rnd = getRandomIndex(randomArray);
+        sourceName = randomArray[rnd].text;
+        sourceValue = randomArray[rnd].value;
+      }
+      getNews(sourceValue, process.env.NEWS_KEY, response_url);
+      return res.json({
+        response_type: 'in_channel',
+        text: text + ' headlines from ' + sourceName,
+      });
 
-    // user entered 'help' or any other text we don't recognize?
-    if (text === 'help' || !found) {
-      return sendHelp(res);
+    // if user input is not found, search news for term
+    } else {
+      searchNews(textArr, process.env.SEARCH_KEY, response_url);
+      return res.json({
+        response_type: 'in_channel',
+        text: 'Headlines for ' + text,
+      });
     }
 
-    if (text === 'news') {
-      sourceName = 'Associated Press';
-      sourceValue = 'associated-press';
-    } else if (text === 'sports') {
-      sourceName = 'ESPN';
-      sourceValue = 'espn';
-    } else if (text === 'finance') {
-      sourceName = 'Bloomberg';
-      sourceValue = 'bloomberg';
-    } else if (text === 'pop') {
-      sourceName = 'Entertainment Weekly';
-      sourceValue = 'entertainment-weekly';
-    } else if (text === 'tech') {
-      sourceName = 'Engadget';
-      sourceValue = 'engadget';
-    } else if (text === 'science') {
-      sourceName = 'science';
-      sourceValue = 'new-scientist';
-    } else if (text === 'random') {
-      // pick random from all category sources
-      var randomCategory = categories[getRandomIndex(categories)];
-      var randomArray = sources[randomCategory];
-      var rnd = getRandomIndex(randomArray);
-      sourceName = randomArray[rnd].text;
-      sourceValue = randomArray[rnd].value;
-    }
-    getNews(sourceValue, process.env.NEWS_KEY, response_url);
-    return res.json({
-      response_type: 'in_channel',
-      text: text + ' headlines from ' + sourceName,
-    });
-
-    // if user input `category random` (or `category random [anything else]`)
+  // if user input `category random` (or `category random [anything else]`)
   } else if (
     textArr.length > 1 &&
-    categories.indexOf(textArr[0]) > -1 &&
+    found &&
     textArr[1] === 'random'
   ) {
     var chosenCategory = textArr[0];
@@ -150,9 +160,14 @@ router.post('/news', function(req, res) {
       response_type: 'in_channel',
       text: 'gathering ' + chosenCategory + ' headlines from ' + sourceName,
     });
+
+  // if user input is a multiple word search
   } else {
-    // everything else unrecognized, return help statement
-    return sendHelp(res);
+    searchNews(textArr, process.env.SEARCH_KEY, response_url);
+    return res.json({
+      response_type: 'in_channel',
+      text: 'Headlines for ' + textArr.join(' '),
+    });
   }
 });
 
@@ -173,7 +188,7 @@ router.post('/news', function(req, res) {
 
 /**
    *
-   * SEARCH FUNCTIONALITY: tbd
+   * SEARCH FUNCTIONALITY: category search needs to be finished
    *
    */
 
