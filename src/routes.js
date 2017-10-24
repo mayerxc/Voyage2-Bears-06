@@ -23,7 +23,7 @@ var knownWords = categories.concat('help', 'random');
 
 /**
  *
- * HELPER FUCNTIONS
+ * HELPER FUNCTIONS
  */
 
 // we send this `help` response from at least 2 places
@@ -134,7 +134,7 @@ router.post('/news', function(req, res) {
         text: text + ' headlines from ' + sourceName,
       });
 
-    // if user input is not found, search news for term
+      // if user input is not found, search news for term
     } else {
       searchNews(textArr, process.env.SEARCH_KEY, response_url);
       return res.json({
@@ -143,12 +143,8 @@ router.post('/news', function(req, res) {
       });
     }
 
-  // if user input `category random` (or `category random [anything else]`)
-  } else if (
-    textArr.length > 1 &&
-    found &&
-    textArr[1] === 'random'
-  ) {
+    // if user input `category random` (or `category random [anything else]`)
+  } else if (textArr.length > 1 && found && textArr[1] === 'random') {
     var chosenCategory = textArr[0];
     var chosenArray = sources[chosenCategory];
     var randomSource = getRandomIndex(chosenArray);
@@ -161,14 +157,29 @@ router.post('/news', function(req, res) {
       text: 'gathering ' + chosenCategory + ' headlines from ' + sourceName,
     });
 
-  // if user input is a multiple word search
-  } else {
-    searchNews(textArr, process.env.SEARCH_KEY, response_url);
+    // user input is a multiple word search
+  } else if (categories.indexOf(textArr[0]) > -1) {
+    // there's a category before other text
+    var category = textArr[0];
+    var toSearch = textArr.slice(1);
+    searchNews(toSearch, process.env.SEARCH_KEY, response_url, category);
     return res.json({
       response_type: 'in_channel',
-      text: 'Headlines for ' + textArr.join(' '),
+      text:
+        'gathering headlines about ' +
+        toSearch.join(' ') +
+        ' from ' +
+        category +
+        ' sources.',
     });
   }
+
+  // no category 'filter' at textArr[0]; search term is entire array
+  searchNews(textArr, process.env.SEARCH_KEY, response_url);
+  return res.json({
+    response_type: 'in_channel',
+    text: 'Headlines for ' + textArr.join(' '),
+  });
 });
 
 // TODO:
