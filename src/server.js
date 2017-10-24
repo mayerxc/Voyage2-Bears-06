@@ -8,6 +8,8 @@ var app = express();
 
 app.use(bodyParser.urlencoded({ extended: false })); // needed to get `req.body` in the POST
 app.use(routes);
+app.use(express.static('public')); // possible this needs to be more robust, using path.join()
+// we'll see what happens when it gets mounted on heroku
 
 var listener = app.listen(process.env.PORT, function() {
   console.log('Your app is listening on port ' + listener.address().port);
