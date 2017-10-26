@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+var axios = require('axios');
 
 var getNews = require('./getNews');
 var searchNews = require('./searchNews');
@@ -182,29 +183,42 @@ router.post('/news', function(req, res) {
   });
 });
 
-// TODO:
-
-/**
- *
- * INTERACTIVE MESSAGE HANDLER: TBD, if we end up using buttons or dropdowns
- *
- */
-
 /**
  *
  * INSTALL NEW TEAM: this route will acknowledge and redirect, when a new team
- * installs the app. (must be called '/install' I think)
+ * installs the app. 
+ * 
+ * This URL must be set in the `Redirect URLs` section
+ * of the app's settings: https://api.slack.com/apps/A7F31FZ1D/oauth
  *
  */
+router.get('/install', function(req, res) {
+  // console.log(req.query);
 
-/**
-   *
-   * SEARCH FUNCTIONALITY: category search needs to be finished
-   *
-   */
+  // slack sends a one-time `code` in the request
+  var code = req.query.code;
 
-/**
-    *  maybe the option to type an API source directly? like `/news bbc-sport` etc?
-    */
+  // add that code to our id (public) and secret (private) in an `oauth.access` querystring
+  var oauthURL =
+    'https://slack.com/api/oauth.access?client_id=210281709219.253103543047&client_secret=' +
+    process.env.CLIENT_SECRET +
+    '&code=' +
+    code;
+
+  // Use newly created URL in a GET request to slack's API
+  axios
+    .get(oauthURL)
+    .then(function(response) {
+      // console.log(response.data)
+
+      // more complicated 'bots save info from `response.data` in databases, etc.
+      // I just use it to create redirect back to installing team's slack page
+      res.redirect('http://' + response.data.team_name + '.slack.com');
+    })
+    .catch(function(error) {
+      console.log(error);
+      res.send({ message: 'something went wrong' });
+    });
+});
 
 module.exports = router;
