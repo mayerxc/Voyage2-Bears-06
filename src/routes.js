@@ -30,14 +30,40 @@ var knownWords = categories.concat('help', 'random');
 // we send this `help` response from at least 2 places
 function sendHelp(res) {
   return res.json({
-    response_type: 'in_channel', // maybe change this to 'ephemeral', later
-    text:
-      'I am a newsbot; you can ask me for headlines from any of six categories: ' +
-      'news, sports, finance, pop, science, and tech. Try typing `/news tech` for example. ' +
-      'You can also try `/news [category] random` to mix it up within a category, ' +
-      'or `/news random` to get random headlines from any source I know.\n\n' +
-      'To find news about a particular search term, try `/news [search-term]` or ' +
-      '`/news [category] [search-term]` (where "category" is any of the 6 named above).'
+    "response_type": "in_channel",
+     "text": "I am a newsbot. Type `/news` and I'll send you the latest news headlines.",
+     "attachments": [
+      {"mrkdwn_in": ["text", "pretext"],
+       "pretext": "You can ask me for headlines from any of six categories: `news`, `sports`, `finance`, `pop`, `science`, and `tech`.",
+       "text": "Try typing `/news tech`.",
+       "color": "#36a64f"
+      },
+      {"mrkdwn_in": ["text"],
+      "pretext": "You can also mix it up within a category:",
+       "color": "#36a64f",
+       "text": "Try `/news tech random`"
+      },
+      {"mrkdwn_in": ["text"],
+      "pretext": "...or get totally random news.",
+       "color": "#36a64f",
+       "text": "Type `/news random`"
+      },
+      {"mrkdwn_in": ["text"],
+      "pretext": "If you have a search term in mind, try this:",
+       "color": "#36a64f",
+       "text": "`/news bananas`"
+      },
+      {"mrkdwn_in": ["text"],
+      "pretext": "..or limit the search to a category.",
+       "color": "#36a64f",
+       "text": "`/news science bananas`"
+      },
+      {"mrkdwn_in": ["text", "pretext"],
+      "pretext": "Of course, you found this by asking for help",
+       "color": "#36a64f",
+       "text": "`/news help`"
+      }
+    ]
   });
 }
 
