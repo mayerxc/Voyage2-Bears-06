@@ -35,7 +35,9 @@ function sendHelp(res) {
       'I am a newsbot; you can ask me for headlines from any of six categories: ' +
       'news, sports, finance, pop, science, and tech. Try typing `/news tech` for example. ' +
       'You can also try `/news [category] random` to mix it up within a category, ' +
-      'or `/news random` to get random headlines from any source I know.',
+      'or `/news random` to get random headlines from any source I know.\n\n' +
+      'To find news about a particular search term, try `/news [search-term]` or ' +
+      '`/news [category] [search-term]` (where "category" is any of the 6 named above).'
   });
 }
 
