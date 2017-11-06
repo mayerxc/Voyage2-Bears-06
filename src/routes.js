@@ -91,7 +91,7 @@ router.post('/news', function(req, res) {
   // sanity check, make sure slack sent us a text string on req.body
   if (typeof req.body.text !== 'string') {
     return res.json({
-      response_type: 'in_channel',
+      response_type: 'ephemeral',
       text: 'Something went wrong...',
     });
   }
@@ -167,7 +167,7 @@ router.post('/news', function(req, res) {
       }
       getNews(sourceValue, process.env.NEWS_KEY, response_url);
       return res.json({
-        response_type: 'in_channel',
+        response_type: 'ephemeral',
         text: text + ' headlines from ' + sourceName,
       });
 
@@ -175,7 +175,7 @@ router.post('/news', function(req, res) {
     } else {
       searchNews(textArr, process.env.SEARCH_KEY, response_url);
       return res.json({
-        response_type: 'in_channel',
+        response_type: 'ephemeral',
         text: 'Headlines for ' + text,
       });
     }
@@ -190,7 +190,7 @@ router.post('/news', function(req, res) {
 
     getNews(sourceValue, process.env.NEWS_KEY, response_url);
     return res.json({
-      response_type: 'in_channel',
+      response_type: 'ephemeral',
       text: 'gathering ' + chosenCategory + ' headlines from ' + sourceName,
     });
 
@@ -201,7 +201,7 @@ router.post('/news', function(req, res) {
     var toSearch = textArr.slice(1);
     searchNews(toSearch, process.env.SEARCH_KEY, response_url, category);
     return res.json({
-      response_type: 'in_channel',
+      response_type: 'ephemeral',
       text:
         'gathering headlines about ' +
         toSearch.join(' ') +
@@ -214,7 +214,7 @@ router.post('/news', function(req, res) {
   // no category 'filter' at textArr[0]; search term is entire array
   searchNews(textArr, process.env.SEARCH_KEY, response_url);
   return res.json({
-    response_type: 'in_channel',
+    response_type: 'ephemeral',
     text: 'Headlines for ' + textArr.join(' '),
   });
 });
