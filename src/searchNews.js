@@ -21,7 +21,7 @@ function searchNews(searchTermArr, key, url, category) {
       dbCat = 'dmoz/Sports';
       break;
     case 'news':
-      dbCat = 'dmoz/Society/'; //Regional/North_America never returned anything.
+      dbCat = 'dmoz/News';
       break;
     default:
       break;
@@ -46,7 +46,6 @@ function searchNews(searchTermArr, key, url, category) {
       '}},{"lang":"eng"}]}}&action=getArticles&resultType=articles&articlesSortBy=date&articlesCount=10&apiKey=' +
       key;
   }
-  console.log(queryURL);
   axios
     .get(queryURL)
     .then(function(reply) {
@@ -62,22 +61,9 @@ function searchNews(searchTermArr, key, url, category) {
           });
         }
       });
-
-      // return relevant information
-      axios.post(url, newsMessage).then(function() {
-        var source = dbCat !== '' ? dbCat : 'all categories';
-        console.log(
-          'searched news in ' +
-            source +
-            ' for "' +
-            searchTermArr.join(' ') +
-            '" at ' +
-            new Date()
-        );
-      });
+      axios.post(url, newsMessage);
     })
     .catch(function(e) {
-      console.log('error getting news from newsAPI: ' + e);
       newsMessage.attachments.push({
         fallback: 'an error occured',
         text: 'Something went wrong with that search, on the API side.',
