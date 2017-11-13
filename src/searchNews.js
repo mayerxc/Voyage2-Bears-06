@@ -21,7 +21,7 @@ function searchNews(searchTermArr, key, url, category) {
       dbCat = 'dmoz/Sports';
       break;
     case 'news':
-      dbCat = 'dmoz/Sports';
+      dbCat = 'dmoz/Home/News_and_Media';
       break;
     default:
       break;
