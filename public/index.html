@@ -7,10 +7,15 @@
     <title>Slack Newsbot</title>
 
     <!--bootstrap stylesheet-->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb"
+        crossorigin="anonymous">
 
     <!--load fonts-->
     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+    <!--Load font awesome -->
+    <link rel="stylesheet" href="stylesheet/font-awesome-4.7.0/css/font-awesome.min.css">
+
 
     <!--load stylesheet-->
     <link rel="stylesheet" href="stylesheet/style.css">
@@ -24,7 +29,10 @@
         <a class="navbar-brand" href="#">Slack Newsbot</a>
 
         <!--Collapse button -->
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+            aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
         <!--collapse content  -->
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
@@ -32,13 +40,12 @@
             <!--links! -->
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="#home">Home <span class="sr-only">(current)</span></a>
+                    <a class="nav-link" href="#home">Home
+                        <span class="sr-only">(current)</span>
+                    </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#about">About</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#download">Download</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#contact">Contact</a>
@@ -55,7 +62,16 @@
                     <div class="card-body text-center">
                         <h4 class="card-title">Slack News bot</h4>
                         <p class="card-text">Check news from right within slack with the slack news bot using slash commands.</p>
-                        <a href="#" class="btn btn-primary">Install on Slack</a>
+
+                        <!-- <a href="#" class="btn btn-primary">Add to slack button here</a> -->
+
+                        <!--Adding code from developer slack page for slack button  -->
+                        <a href="https://slack.com/oauth/authorize?client_id=210281709219.253103543047&scope=commands">
+                            <img alt="Add to Slack" height="40" width="139" src="https://platform.slack-edge.com/img/add_to_slack.png"
+                                srcset="https://platform.slack-edge.com/img/add_to_slack.png 1x, https://platform.slack-edge.com/img/add_to_slack@2x.png 2x"
+                            />
+                        </a>
+
                     </div>
                 </div>
             </div>
@@ -63,22 +79,52 @@
     </section>
 
     <section id="about">
-
-    </section>
-
-    <section id="download">
+        <div class="container-fluid">
+            <div class="row align-items-center">
+                <div class="col-lg-6 col-md-9 col-sm-12 mx-auto">
+                    <h1>About</h1>
+                    <p>
+                        This bot can look for headlines from six categories: news, sports, finance, pop, science, and tech. Try
+                        typing “/news tech” for example. 
+                    </p>
+                    <p>
+                        You can also try “/news random” for headlines from a random source,
+                        or “/news [category] random” to to mix it up within a category. 
+                    </p>
+                    <p>    
+                        To find news about a particular search term, try “/news [search-term]” or “/news [category] [search-term]” (where "category" is any of the
+                        6 named above).
+                    </p>
+                </div>
+            </div>
+        </div>
 
     </section>
 
     <section id="contact">
+            <div class="container-fluid">
+                <div class="row align-items-center">
+                    <div class="col-lg-6 col-md-9 col-sm-12 mx-auto">
+                        <h1>Contact</h1>
+                        <p></p><a href="https://github.com/chingu-coders/Voyage2-Bears-06" target="_blank">Project Code on <i class="fa fa-github"></i></a></p>
+                        <a class="links" href="https://github.com/shoesandsocks" target="_blank">RL Brown <i class="fa fa-github"></i></a>
+                        <a class="links" href="https://github.com/daniellzl" target="_blank">Daniel pang <i class="fa fa-github"></i></a>
+                        <a class="links" href="https://www.linkedin.com/in/ashkherad/" target="_blank">Ash Kheradmand <i class="fa fa-linkedin"></i></a>
+                        <a class="links" href="https://github.com/mayerxc" target="_blank">Chris Mayer <i class="fa fa-github"></i></a>
+                    </div>
+                </div>
+            </div>
 
     </section>
 
 
     <!--script tags-->
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ"
+        crossorigin="anonymous"></script>
     <script src="js/script.js"></script>
 
 
