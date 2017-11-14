@@ -3,7 +3,7 @@ body {
     margin: 0;
     padding: 0;
 */
-    padding-top: 60px;
+    padding-top: 55px;
     font-family: 'Roboto', sans-serif;
     position: relative;
     
@@ -21,7 +21,7 @@ a {
 .header {
     background: url(https://res.cloudinary.com/mayerxc/image/upload/e_grayscale/v1508181408/oliver-thomas-klein-161835_ccz0mo.jpg) no-repeat center center fixed;
     background-size: cover;
-    height: 100vh;
+    height: 80vh;
     overflow: auto;
 
 }
@@ -31,19 +31,33 @@ a {
 }
 
 #about {
-    height: 80vh;
-    background-color: gray;
+    text-align: center;
+    /* height: 80vh; */
+    background-color: white;
+    padding-bottom: 3rem;
 }
 
-#download {
-    height: 80vh;
-    background-color: lightgreen;
+#about h1 {
+    padding: 3rem 0 3rem 0;
+}
+#about p {
+    text-align: left;
+    
 }
 
 #contact {
+    text-align: center;
     height: 80vh;
-    background-color: lightpink;
+    color: white;
+    background-color: black;
 }
 
+#contact h1 {
+    padding: 3rem 0 3rem 0;
+}
+
+#contact .links {
+    display: block;
+}
 
 
