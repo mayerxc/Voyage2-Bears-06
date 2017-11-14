@@ -25,6 +25,7 @@ var knownWords = categories.concat('help', 'random');
 /**
  *
  * HELPER FUNCTIONS
+ *
  */
 
 // we send this `help` response from at least 2 places
@@ -75,7 +76,6 @@ function sendHelp(res) {
   });
 }
 
-// pick an index from an array
 function getRandomIndex(array) {
   return Math.floor(Math.random() * array.length);
 }
@@ -95,6 +95,7 @@ router.post('/news', function(req, res) {
       text: 'Something went wrong...',
     });
   }
+
   var response_url = req.body.response_url;
 
   // turn user input into array of words
@@ -118,7 +119,7 @@ router.post('/news', function(req, res) {
       }
       result.push(text.slice(j, text.length));
       return result;
-      // text isn't defined
+    // text isn't defined
     } else {
       return ['news'];
     }
@@ -128,20 +129,17 @@ router.post('/news', function(req, res) {
   var sourceName = '';
   var sourceValue = '';
 
-  // determine if first word of user input is a news category, `help`, or `random`
-  var found = knownWords.indexOf(textArr[0]) > -1;
+  // if first word of user input is a known word (i.e. a news category, `help`, or `random`)
+  if (knownWords.indexOf(textArr[0]) > -1) {
 
-  // if user input is empty or a single word
-  if (textArr.length === 1) {
-    var text = textArr[0];
-
-    // if user input is a pre-defined word
-    if (found) {
+    // if user inputs '/news' or '/news [category]' or '/news random'
+    if (textArr.length === 1) {
+      var text = textArr[0];
       if (text === 'help') {
         return sendHelp(res);
       } else if (text === 'news') {
-        sourceName = 'Associated Press';
-        sourceValue = 'associated-press';
+        sourceName = 'Google News';
+        sourceValue = 'google-news';
       } else if (text === 'sports') {
         sourceName = 'ESPN';
         sourceValue = 'espn';
@@ -149,21 +147,19 @@ router.post('/news', function(req, res) {
         sourceName = 'Bloomberg';
         sourceValue = 'bloomberg';
       } else if (text === 'pop') {
-        sourceName = 'Entertainment Weekly';
-        sourceValue = 'entertainment-weekly';
+        sourceName = 'MTV News';
+        sourceValue = 'mtv-news';
       } else if (text === 'tech') {
         sourceName = 'Engadget';
         sourceValue = 'engadget';
       } else if (text === 'science') {
-        sourceName = 'science';
+        sourceName = 'New Scientist';
         sourceValue = 'new-scientist';
       } else if (text === 'random') {
-        // pick random from all category sources
-        var randomCategory = categories[getRandomIndex(categories)];
-        var randomArray = sources[randomCategory];
-        var rnd = getRandomIndex(randomArray);
-        sourceName = randomArray[rnd].text;
-        sourceValue = randomArray[rnd].value;
+        var choosenSources = sources[categories[getRandomIndex(categories)]];
+        var choosenSourceIndex = getRandomIndex(choosenSources);
+        sourceName = choosenSources[choosenSourceIndex].text;
+        sourceValue = choosenSources[choosenSourceIndex].value;
       }
       getNews(sourceValue, process.env.NEWS_KEY, response_url);
       return res.json({
@@ -171,7 +167,36 @@ router.post('/news', function(req, res) {
         text: text + ' headlines from ' + sourceName,
       });
 
-      // if user input is not found, search news for term
+    // if user inputs '/news [category] random'
+    } else if (textArr.length === 2 && sources.hasOwnProperty(textArr[0]) && textArr[1] === 'random') {
+      var chosenCategory = textArr[0];
+      var chosenArray = sources[chosenCategory];
+      var randomSource = getRandomIndex(chosenArray);
+      sourceName = chosenArray[randomSource].text;
+      sourceValue = chosenArray[randomSource].value;
+      getNews(sourceValue, process.env.NEWS_KEY, response_url);
+      return res.json({
+        response_type: 'in_channel',
+        text: 'Gathering ' + chosenCategory + ' headlines from ' + sourceName + '...'
+      });
+
+    // if user inputs '/news [category] [search-term]'
+    } else if (sources.hasOwnProperty(textArr[0])) {
+      var category = textArr[0];
+      var toSearch = textArr.slice(1);
+      searchNews(toSearch, process.env.SEARCH_KEY, response_url, category);
+      return res.json({
+        response_type: 'in_channel',
+        text:
+          'Gathering headlines about ' +
+          toSearch.join(' ') +
+          ' from ' +
+          category +
+          ' sources' +
+          '...',
+      });
+
+    // if user inputs '/news random [search-term]' or 'news help [search-term]'
     } else {
       searchNews(textArr, process.env.SEARCH_KEY, response_url);
       return res.json({
@@ -222,8 +247,8 @@ router.post('/news', function(req, res) {
 /**
  *
  * INSTALL NEW TEAM: this route will acknowledge and redirect, when a new team
- * installs the app. 
- * 
+ * installs the app.
+ *
  * This URL must be set in the `Redirect URLs` section
  * of the app's settings: https://api.slack.com/apps/A7F31FZ1D/oauth
  *
