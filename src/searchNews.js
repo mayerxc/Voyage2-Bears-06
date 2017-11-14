@@ -1,6 +1,7 @@
 var axios = require('axios');
 
 function searchNews(searchTermArr, key, url, category) {
+
   var dbCat = '';
   switch (category) {
     case '':
@@ -20,15 +21,13 @@ function searchNews(searchTermArr, key, url, category) {
     case 'sports':
       dbCat = 'dmoz/Sports';
       break;
-    case 'news':
-      dbCat = 'dmoz/Society/'; //Regional/North_America never returned anything.
-      break;
     default:
       break;
   }
+
   var newsMessage = {
     icon_emoji: ':newspaper:',
-    text: 'The latest headlines for ' + searchTermArr.join(' '),
+    text: 'Here\'s the latest for ' + searchTermArr.join(' '),
     attachments: [],
   };
 
@@ -37,6 +36,7 @@ function searchNews(searchTermArr, key, url, category) {
     JSON.stringify(searchTermArr) +
     '}},{"lang":"eng"}]}}&action=getArticles&resultType=articles&articlesSortBy=date&articlesCount=10&apiKey=' +
     key;
+
   if (dbCat !== '') {
     queryURL =
       'http://eventregistry.org/json/article?query={"$query":{"$and":[{"categoryUri":"' +
@@ -46,7 +46,9 @@ function searchNews(searchTermArr, key, url, category) {
       '}},{"lang":"eng"}]}}&action=getArticles&resultType=articles&articlesSortBy=date&articlesCount=10&apiKey=' +
       key;
   }
+
   console.log(queryURL);
+
   axios
     .get(queryURL)
     .then(function(reply) {
@@ -54,7 +56,7 @@ function searchNews(searchTermArr, key, url, category) {
       reply.data.articles.results.forEach(function(result) {
         if (!result.isDuplicate) {
           newsMessage.attachments.push({
-            fallback: 'a news headline',
+            fallback: 'A News Headline',
             text: result.body,
             title_link: result.url,
             title: result.title,
@@ -80,7 +82,7 @@ function searchNews(searchTermArr, key, url, category) {
       console.log('error getting news from newsAPI: ' + e);
       newsMessage.attachments.push({
         fallback: 'an error occured',
-        text: 'Something went wrong with that search, on the API side.',
+        text: 'News for ' + searchTermArr.join(' ') + ' could not be found.',
       });
       axios.post(url, newsMessage);
     });
