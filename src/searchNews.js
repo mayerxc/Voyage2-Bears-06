@@ -21,6 +21,9 @@ function searchNews(searchTermArr, key, url, category) {
     case 'sports':
       dbCat = 'dmoz/Sports';
       break;
+    case 'news':
+      dbCat = 'dmoz/Home/News_and_Media';
+      break;
     default:
       break;
   }
@@ -46,9 +49,6 @@ function searchNews(searchTermArr, key, url, category) {
       '}},{"lang":"eng"}]}}&action=getArticles&resultType=articles&articlesSortBy=date&articlesCount=10&apiKey=' +
       key;
   }
-
-  console.log(queryURL);
-
   axios
     .get(queryURL)
     .then(function(reply) {
@@ -64,22 +64,9 @@ function searchNews(searchTermArr, key, url, category) {
           });
         }
       });
-
-      // return relevant information
-      axios.post(url, newsMessage).then(function() {
-        var source = dbCat !== '' ? dbCat : 'all categories';
-        console.log(
-          'searched news in ' +
-            source +
-            ' for "' +
-            searchTermArr.join(' ') +
-            '" at ' +
-            new Date()
-        );
-      });
+      axios.post(url, newsMessage);
     })
     .catch(function(e) {
-      console.log('error getting news from newsAPI: ' + e);
       newsMessage.attachments.push({
         fallback: 'an error occured',
         text: 'News for ' + searchTermArr.join(' ') + ' could not be found.',
