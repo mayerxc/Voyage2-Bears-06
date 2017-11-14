@@ -28,7 +28,6 @@ var knownWords = categories.concat('help', 'random');
  *
  */
 
-// we send this `help` response from at least 2 places
 function sendHelp(res) {
   return res.json({
     response_type: 'ephemeral',
@@ -86,9 +85,6 @@ function getRandomIndex(array) {
  *
  */
 router.post('/news', function(req, res) {
-  // console.log(req.body);
-
-  // sanity check, make sure slack sent us a text string on req.body
   if (typeof req.body.text !== 'string') {
     return res.json({
       response_type: 'ephemeral',
@@ -164,7 +160,7 @@ router.post('/news', function(req, res) {
       getNews(sourceValue, process.env.NEWS_KEY, response_url);
       return res.json({
         response_type: 'ephemeral',
-        text: text + ' headlines from ' + sourceName,
+        text: 'Gathering ' + text + ' headlines from ' + sourceName + '...',
       });
 
     // if user inputs '/news [category] random'
@@ -176,7 +172,7 @@ router.post('/news', function(req, res) {
       sourceValue = chosenArray[randomSource].value;
       getNews(sourceValue, process.env.NEWS_KEY, response_url);
       return res.json({
-        response_type: 'in_channel',
+        response_type: 'ephemeral',
         text: 'Gathering ' + chosenCategory + ' headlines from ' + sourceName + '...'
       });
 
@@ -186,14 +182,13 @@ router.post('/news', function(req, res) {
       var toSearch = textArr.slice(1);
       searchNews(toSearch, process.env.SEARCH_KEY, response_url, category);
       return res.json({
-        response_type: 'in_channel',
+        response_type: 'ephemeral',
         text:
           'Gathering headlines about ' +
           toSearch.join(' ') +
           ' from ' +
           category +
-          ' sources' +
-          '...',
+          ' sources...',
       });
 
     // if user inputs '/news random [search-term]' or 'news help [search-term]'
@@ -201,79 +196,35 @@ router.post('/news', function(req, res) {
       searchNews(textArr, process.env.SEARCH_KEY, response_url);
       return res.json({
         response_type: 'ephemeral',
-        text: 'Headlines for ' + text,
+        text: 'Gathering headlines for ' + textArr.join(' ') + '...',
       });
     }
 
-    // if user input `category random` (or `category random [anything else]`)
-  } else if (textArr.length > 1 && found && textArr[1] === 'random') {
-    var chosenCategory = textArr[0];
-    var chosenArray = sources[chosenCategory];
-    var randomSource = getRandomIndex(chosenArray);
-    sourceName = chosenArray[randomSource].text;
-    sourceValue = chosenArray[randomSource].value;
-
-    getNews(sourceValue, process.env.NEWS_KEY, response_url);
-    return res.json({
-      response_type: 'ephemeral',
-      text: 'gathering ' + chosenCategory + ' headlines from ' + sourceName,
-    });
-
-    // user input is a multiple word search
-  } else if (categories.indexOf(textArr[0]) > -1) {
-    // there's a category before other text
-    var category = textArr[0];
-    var toSearch = textArr.slice(1);
-    searchNews(toSearch, process.env.SEARCH_KEY, response_url, category);
-    return res.json({
-      response_type: 'ephemeral',
-      text:
-        'gathering headlines about ' +
-        toSearch.join(' ') +
-        ' from ' +
-        category +
-        ' sources.',
+    // if first word of user input is unknown
+    } else {
+      searchNews(textArr, process.env.SEARCH_KEY, response_url);
+      return res.json({
+        response_type: 'ephemeral',
+        text: 'Gathering headlines for ' + textArr.join(' ') + '...',
     });
   }
-
-  // no category 'filter' at textArr[0]; search term is entire array
-  searchNews(textArr, process.env.SEARCH_KEY, response_url);
-  return res.json({
-    response_type: 'ephemeral',
-    text: 'Headlines for ' + textArr.join(' '),
-  });
 });
 
 /**
  *
  * INSTALL NEW TEAM: this route will acknowledge and redirect, when a new team
  * installs the app.
- *
- * This URL must be set in the `Redirect URLs` section
- * of the app's settings: https://api.slack.com/apps/A7F31FZ1D/oauth
- *
  */
 router.get('/install', function(req, res) {
-  // console.log(req.query);
-
-  // slack sends a one-time `code` in the request
   var code = req.query.code;
-
-  // add that code to our id (public) and secret (private) in an `oauth.access` querystring
   var oauthURL =
     'https://slack.com/api/oauth.access?client_id=210281709219.253103543047&client_secret=' +
     process.env.CLIENT_SECRET +
     '&code=' +
     code;
-
-  // Use newly created URL in a GET request to slack's API
   axios
     .get(oauthURL)
     .then(function(response) {
-      // console.log(response.data)
-
-      // more complicated 'bots save info from `response.data` in databases, etc.
-      // I just use it to create redirect back to installing team's slack page
       res.redirect('http://' + response.data.team_name + '.slack.com');
     })
     .catch(function(error) {

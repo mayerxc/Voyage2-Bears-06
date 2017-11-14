@@ -1,7 +1,6 @@
 var axios = require('axios');
 
 function searchNews(searchTermArr, key, url, category) {
-
   var dbCat = '';
   switch (category) {
     case '':
@@ -21,16 +20,13 @@ function searchNews(searchTermArr, key, url, category) {
     case 'sports':
       dbCat = 'dmoz/Sports';
       break;
-    case 'news':
-      dbCat = 'dmoz/Home/News_and_Media';
-      break;
     default:
       break;
   }
 
   var newsMessage = {
     icon_emoji: ':newspaper:',
-    text: 'Here\'s the latest for ' + searchTermArr.join(' '),
+    text: "Here's the latest for " + searchTermArr.join(' '),
     attachments: [],
   };
 
