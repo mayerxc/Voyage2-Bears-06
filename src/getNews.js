@@ -3,7 +3,7 @@ var axios = require('axios');
 function getNews(source, key, url) {
   var newsMessage = {
     icon_emoji: ':newspaper:',
-    text: 'The latest headlines from ' + source,
+    text: "Here's the latest",
     attachments: [],
   };
   axios
